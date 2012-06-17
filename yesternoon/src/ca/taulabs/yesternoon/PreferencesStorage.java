@@ -61,6 +61,6 @@ public class PreferencesStorage implements Storage
 	@Override
 	public void saveCounter(Counter counter) 
 	{
-		// TODO Auto-generated method stub
+	  // TODO: What to do here?
 	}
 }
