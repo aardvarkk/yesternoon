@@ -5,86 +5,113 @@ import java.util.Vector;
 import ca.taulabs.yesternoon.picker.NumberPicker;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 public class YesternoonActivity extends Activity 
-{
-  private PreferencesStorage mStorage;
-  private Vector<Counter> mCounters;
-  
+{    
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) 
   {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.main);
     
     // let's init our instances
-    mStorage = new PreferencesStorage(this);
-    mCounters = mStorage.loadCounters();
+    PreferencesStorage storage = PreferencesStorage.getPreferencesStorage(this);
+    Vector<Counter> counters = storage.getCounters();
     
-    if (mCounters.isEmpty())
+    if (counters.isEmpty())
     {
       // We should bring up a UI that lets
       // the user create their first counter
-      setContentView(R.layout.add_counter);
-      NumberPicker picker = (NumberPicker)findViewById(R.id.startingCounter);
-      //picker.setRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
-      picker.setCurrent(0);
-      Button btnAddCounterOK = (Button)findViewById(R.id.btnAddCounterOK);
-      btnAddCounterOK.setOnClickListener(new AddCounterOKClicked());
+      Intent addCounterIntent = new Intent(this, AddCounterActivity.class);
+      this.startActivityForResult(addCounterIntent, 1);
     }
     else
     {
-      // we have at least 1 counter, let's check what the
-      // last counter was that was used and show that one
-      setContentView(R.layout.main);
+      // we have at least 1 counter, let's init our main UI
+      initialize();
     }
   }
   
-  private class AddCounterOKClicked implements OnClickListener
+  private void initialize()
   {
-    @Override
-    public void onClick(View view)
+    // TODO: We should check what the last loaded counter was and go to it.
+    
+    // Get the main layout view flipper
+    ViewFlipper vflipper = (ViewFlipper)findViewById(R.id.counterFlipperView);
+    vflipper.removeAllViews();
+    
+    // Inflate the layout
+    LayoutInflater layout = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    View inflatedView = layout.inflate(R.layout.single_counter_view, vflipper);
+    
+    // For now just load the first counter
+    Vector<Counter> counters = PreferencesStorage.getPreferencesStorage(YesternoonActivity.this).getCounters();
+    Counter nextCounter = counters.elementAt(0);
+    
+    // fill the views
+    TextView counterNameView = (TextView)inflatedView.findViewById(R.id.mainCounterName);
+    counterNameView.setText(nextCounter.getName());
+    NumberPicker mainCounterValue = (NumberPicker)inflatedView.findViewById(R.id.mainCounter);
+    mainCounterValue.setCurrent(nextCounter.getCount());
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) 
+  {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.main_menu, menu);
+    return true;
+  }
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) 
+  {
+    // Handle item selection
+    switch (item.getItemId()) 
     {
-      // The add counter views "OK" button has been
-      // clicked. We should validate the input and 
-      // if everything is ok, add a counter and switch 
-      // to the main view.
-      EditText counterNameView = (EditText)YesternoonActivity.this.findViewById(R.id.nameEdit);
-      String counterName = counterNameView.getText().toString();
-      if (counterName == null || counterName.equals(""))
+      case R.id.addCounterMenuItem:
+        Intent addCounterIntent = new Intent(this, AddCounterActivity.class);
+        this.startActivityForResult(addCounterIntent, 1);
+        return true;
+      case R.id.deleteCounterMenuItem:
+        return true;
+      case R.id.editCounterMenuItem:
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+  
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+  {
+    super.onActivityResult(requestCode, resultCode, data);
+    
+    // the Add Counter ACtivity has returned
+    if(requestCode == 1)
+    {
+      // check if they added the counter or if they just cancelled
+      Vector<Counter> counters = PreferencesStorage.getPreferencesStorage(YesternoonActivity.this).getCounters();
+      if (counters.isEmpty())
       {
-        AlertDialog.Builder builder = new AlertDialog.Builder(YesternoonActivity.this);
-        builder.setMessage("Please specify a name for the counter.");
-        builder.setCancelable(false);
-        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int id) {
-               dialog.cancel();
-          }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+        YesternoonActivity.this.finish(); // they just cancelled or went back, close the app
       }
       else
       {
-        // They have properly created a counter
-        // Let's create a new counter
-        NumberPicker picker = (NumberPicker)findViewById(R.id.startingCounter);
-        Counter counter = new Counter(counterName, picker.getCurrent());
-        mCounters.add(counter);
-        
-        // Add the counter to our list of counters
-        mStorage.saveCounters(mCounters);
-        
-        // switch to the main view!
-        YesternoonActivity.this.setContentView(R.layout.main);
+        // Yay! They added a counter! Let's init
+        initialize();
       }
-    } 
+    }
   }
 }
