@@ -63,7 +63,7 @@ public class PreferencesStorage
     
     // loop through shared prefs loading each counter
     SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, 0);
-    int idx = 1;
+    int idx = 0;
     // each counter name will be stored under key "Counter_<idx>"
     while(settings.getString(COUNTER_PREFIX + idx, null) != null)
     {
@@ -73,10 +73,5 @@ public class PreferencesStorage
       mCounters.add(tempCounter);
       idx++;
     }
-    
-    // TODO: Testing purposes, just clear the settings every time we load.
-    Editor edit = settings.edit();
-    edit.clear();
-    edit.commit();
   }
 }

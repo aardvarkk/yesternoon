@@ -46,7 +46,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
         OnFocusChangeListener, OnLongClickListener {
 
     private static final String TAG = "NumberPicker";
-    private static final int DEFAULT_MAX = 200;
+    private static final int DEFAULT_MAX = Integer.MAX_VALUE;
     private static final int DEFAULT_MIN = 0;
 
     // TODO: I Need to check the licensing on using this class
