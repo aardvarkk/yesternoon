@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import ca.taulabs.yesternoon.animations.SlideAnimation;
 import ca.taulabs.yesternoon.picker.NumberPicker;
+import ca.taulabs.yesternoon.picker.NumberPicker.OnChangedListener;
 
 import android.app.Activity;
 import android.content.Context;
@@ -94,6 +95,7 @@ public class YesternoonActivity extends Activity
       counterNameView.setText(nextCounter.getName());
       NumberPicker mainCounterValue = (NumberPicker)inflatedView.findViewById(R.id.mainCounter);
       mainCounterValue.setCurrent(nextCounter.getCount());
+      mainCounterValue.setOnChangeListener(new CounterValueChangedListener());
       
       vflipper.addView(inflatedView);
     }
@@ -171,6 +173,20 @@ public class YesternoonActivity extends Activity
   {
     Intent addCounterIntent = new Intent(this, AddCounterActivity.class);
     this.startActivityForResult(addCounterIntent, 1);
+  }
+  
+  private class CounterValueChangedListener implements OnChangedListener
+  {
+    @Override
+    public void onChanged(NumberPicker picker, int oldVal, int newVal)
+    {   
+      // Get the current counter and set it's value
+      Counter counter = mCounters.get(mCurrentCounterIdx);
+      counter.setCount(newVal);
+      
+      // save the new value
+      mStorage.saveCounter(counter);
+    }
   }
   
   private class MainGestureDetector implements OnGestureListener
