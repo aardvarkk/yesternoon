@@ -3,7 +3,7 @@
     <string name="app_name">Yesternoon</string>
     <string name="add_counter">New</string>
     <string name="delete_counter">Delete</string>
-    <string name="edit_counter">Edit</string>
+    <string name="edit_counter">Rename</string>
     <string name="add_counter_title">Add a counter!</string>
 
 </resources>

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -107,6 +108,30 @@ public class YesternoonActivity extends Activity
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.main_menu, menu);
     return true;
+  }
+ 
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) 
+  {
+    // decrement the current active counter
+    if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+    {
+      ViewFlipper vflipper = (ViewFlipper)findViewById(R.id.counterFlipperView);
+      View singleCounterView = (View)vflipper.getChildAt(mCurrentCounterIdx);
+      NumberPicker picker = (NumberPicker)singleCounterView.findViewById(R.id.mainCounter);
+      picker.setCurrent(picker.getCurrent() - 1);
+      return true;
+    }
+    // increment the current active counter
+    else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+    {
+      ViewFlipper vflipper = (ViewFlipper)findViewById(R.id.counterFlipperView);
+      View singleCounterView = (View)vflipper.getChildAt(mCurrentCounterIdx);
+      NumberPicker picker = (NumberPicker)singleCounterView.findViewById(R.id.mainCounter);
+      picker.setCurrent(picker.getCurrent() + 1);
+      return true;
+    }
+    return super.onKeyDown(keyCode, event);
   }
   
   @Override

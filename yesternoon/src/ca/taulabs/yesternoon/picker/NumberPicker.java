@@ -195,6 +195,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
     public void setCurrent(int current) {
         mCurrent = current;
         updateView();
+        notifyChange();
     }
 
     /**
