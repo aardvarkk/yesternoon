@@ -2,7 +2,6 @@ package ca.taulabs.yesternoon;
 
 import java.util.Vector;
 
-import ca.taulabs.yesternoon.picker.NumberPicker;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 
 public class AddCounterActivity extends Activity
 {
@@ -21,8 +21,9 @@ public class AddCounterActivity extends Activity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.add_counter);
     NumberPicker picker = (NumberPicker)findViewById(R.id.startingCounter);
-    //picker.setRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
-    picker.setCurrent(0);
+    picker.setMinValue(0);
+    picker.setMaxValue(999);
+    picker.setValue(0);
     Button btnAddCounterOK = (Button)findViewById(R.id.btnAddCounterOK);
     Button btnAddCounterCancel = (Button)findViewById(R.id.btnAddCounterCancel);
     btnAddCounterOK.setOnClickListener(new AddCounterOKClicked());
@@ -31,7 +32,6 @@ public class AddCounterActivity extends Activity
   
   private class AddCounterCancelClicked implements OnClickListener
   {
-    @Override
     public void onClick(View view)
     {
       // TODO: Do a check if there are counters, if they cancel we should warn them 
@@ -41,7 +41,6 @@ public class AddCounterActivity extends Activity
   
   private class AddCounterOKClicked implements OnClickListener
   {
-    @Override
     public void onClick(View view)
     {
       // The add counter views "OK" button has been
@@ -69,7 +68,7 @@ public class AddCounterActivity extends Activity
         // Let's create a new counter, and add it to our list of counters!
         PreferencesStorage storage = PreferencesStorage.getPreferencesStorage(AddCounterActivity.this);
         NumberPicker picker = (NumberPicker)findViewById(R.id.startingCounter);
-        Counter counter = new Counter(storage.generateID(), counterName, picker.getCurrent());
+        Counter counter = new Counter(storage.generateID(), counterName, picker.getValue());
         Vector<Counter> counters = storage.getCounters();
         counters.add(counter);
         storage.saveCounters();

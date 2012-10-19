@@ -3,8 +3,6 @@ package ca.taulabs.yesternoon;
 import java.util.Vector;
 
 import ca.taulabs.yesternoon.animations.SlideAnimation;
-import ca.taulabs.yesternoon.picker.NumberPicker;
-import ca.taulabs.yesternoon.picker.NumberPicker.OnChangedListener;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import android.widget.NumberPicker;
 
 public class YesternoonActivity extends Activity
 {    
@@ -95,8 +94,10 @@ public class YesternoonActivity extends Activity
       TextView counterNameView = (TextView)inflatedView.findViewById(R.id.mainCounterName);
       counterNameView.setText(nextCounter.getName());
       NumberPicker mainCounterValue = (NumberPicker)inflatedView.findViewById(R.id.mainCounter);
-      mainCounterValue.setCurrent(nextCounter.getCount());
-      mainCounterValue.setOnChangeListener(new CounterValueChangedListener());
+      mainCounterValue.setMinValue(0);
+      mainCounterValue.setMaxValue(999);
+      mainCounterValue.setValue(nextCounter.getCount());
+      mainCounterValue.setOnValueChangedListener(new CounterValueChangedListener());
       
       vflipper.addView(inflatedView);
     }
@@ -119,7 +120,7 @@ public class YesternoonActivity extends Activity
       ViewFlipper vflipper = (ViewFlipper)findViewById(R.id.counterFlipperView);
       View singleCounterView = (View)vflipper.getChildAt(mCurrentCounterIdx);
       NumberPicker picker = (NumberPicker)singleCounterView.findViewById(R.id.mainCounter);
-      picker.setCurrent(picker.getCurrent() - 1);
+      picker.setValue(picker.getValue() - 1);
       return true;
     }
     // increment the current active counter
@@ -128,7 +129,7 @@ public class YesternoonActivity extends Activity
       ViewFlipper vflipper = (ViewFlipper)findViewById(R.id.counterFlipperView);
       View singleCounterView = (View)vflipper.getChildAt(mCurrentCounterIdx);
       NumberPicker picker = (NumberPicker)singleCounterView.findViewById(R.id.mainCounter);
-      picker.setCurrent(picker.getCurrent() + 1);
+      picker.setValue(picker.getValue() + 1);
       return true;
     }
     return super.onKeyDown(keyCode, event);
@@ -200,11 +201,10 @@ public class YesternoonActivity extends Activity
     this.startActivityForResult(addCounterIntent, 1);
   }
   
-  private class CounterValueChangedListener implements OnChangedListener
+  private class CounterValueChangedListener implements NumberPicker.OnValueChangeListener
   {
-    @Override
-    public void onChanged(NumberPicker picker, int oldVal, int newVal)
-    {   
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal)
+    {
       // Get the current counter and set it's value
       Counter counter = mCounters.get(mCurrentCounterIdx);
       counter.setCount(newVal);
@@ -219,13 +219,11 @@ public class YesternoonActivity extends Activity
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     
-    @Override
     public boolean onDown(MotionEvent e)
     {
       return false;
     }
 
-    @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
         float velocityY)
     {
@@ -266,24 +264,20 @@ public class YesternoonActivity extends Activity
       return bFlingDetected;
     }
 
-    @Override
     public void onLongPress(MotionEvent e)
     {
     }
 
-    @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
         float distanceY)
     {
       return false;
     }
 
-    @Override
     public void onShowPress(MotionEvent e)
     {
     }
 
-    @Override
     public boolean onSingleTapUp(MotionEvent e)
     {
       return false;

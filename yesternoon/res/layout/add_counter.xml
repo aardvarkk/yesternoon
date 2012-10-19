@@ -1,86 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <TextView
         android:id="@+id/topLabel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"        
-	    android:layout_alignParentTop="true"
-	    android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="@string/add_counter_title"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-	<View
-	    android:id="@+id/divider1"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
-	    android:layout_margin="5dip"
-	    android:layout_below="@id/topLabel"
-	    android:background="@android:color/darker_gray" />
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_margin="5dip"
+        android:background="@android:color/darker_gray" />
 
-	<LinearLayout 
-	    android:id="@+id/buttonLayout"
-	    android:layout_width="wrap_content" 
-	    android:layout_height="wrap_content"
-	    android:orientation="horizontal"
-		android:layout_alignParentBottom="true"
-		android:layout_centerHorizontal="true">
-		<Button
-		    android:id="@+id/btnAddCounterOK"
-		    android:layout_width="100dip"
-		    android:layout_height="wrap_content"
-		    android:text="OK" />
-		
-		<Button
-		    android:id="@+id/btnAddCounterCancel"
-		    android:layout_width="100dip"
-		    android:layout_height="wrap_content"
-		    android:text="Cancel" />
-	</LinearLayout>
-	
-	<ScrollView
-	    android:id="@+id/scrollView"
-	    android:layout_below="@id/divider1"
-	    android:layout_above="@id/buttonLayout"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-	    <LinearLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:orientation="vertical" >
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" >
 
-	        <TextView
-	            android:id="@+id/nameLabel"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="Name:"
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
-	        <EditText
-	            android:id="@+id/nameEdit"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:singleLine="true"
-	            android:ems="10" />
+                <TextView
+                    android:id="@+id/nameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Name"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-			<TextView
-			    android:id="@+id/startingCounterLabel"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:text="Starting Count:"
-			    android:textAppearance="?android:attr/textAppearanceMedium" />
-			
-			<ca.taulabs.yesternoon.picker.NumberPicker
-			    android:id="@+id/startingCounter"
-				android:layout_width="80dip"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"/>
+                <EditText
+                    android:id="@+id/nameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:ems="10"
+                    android:hint="My Counter"
+                    android:singleLine="true" />
 
-	    </LinearLayout>
-	</ScrollView>
+                <TextView
+                    android:id="@+id/startingCounterLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Starting Count"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-</RelativeLayout>
+                <NumberPicker
+                    android:id="@+id/startingCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal" />
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/buttonLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnAddCounterOK"
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:text="OK" />
+
+            <Button
+                android:id="@+id/btnAddCounterCancel"
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:text="Cancel" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
