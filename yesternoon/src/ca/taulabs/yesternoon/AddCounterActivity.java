@@ -23,6 +23,7 @@ public class AddCounterActivity extends Activity
     NumberPicker picker = (NumberPicker)findViewById(R.id.startingCounter);
     picker.setMinValue(0);
     picker.setMaxValue(999);
+    picker.setWrapSelectorWheel(false);
     picker.setValue(0);
     Button btnAddCounterOK = (Button)findViewById(R.id.btnAddCounterOK);
     Button btnAddCounterCancel = (Button)findViewById(R.id.btnAddCounterCancel);

@@ -87,8 +87,7 @@ public class YesternoonActivity extends Activity
       Counter nextCounter = mCounters.elementAt(nI);
       
       // Inflate the layout
-      LayoutInflater layout = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      View inflatedView = layout.inflate(R.layout.single_counter_view, null);
+      View inflatedView = getLayoutInflater().inflate(R.layout.single_counter_view, null);
             
       // fill the views
       TextView counterNameView = (TextView)inflatedView.findViewById(R.id.mainCounterName);
@@ -97,6 +96,7 @@ public class YesternoonActivity extends Activity
       mainCounterValue.setMinValue(0);
       mainCounterValue.setMaxValue(999);
       mainCounterValue.setValue(nextCounter.getCount());
+      mainCounterValue.setWrapSelectorWheel(false);
       mainCounterValue.setOnValueChangedListener(new CounterValueChangedListener());
       
       vflipper.addView(inflatedView);
