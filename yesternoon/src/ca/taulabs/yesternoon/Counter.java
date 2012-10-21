@@ -7,27 +7,13 @@ package ca.taulabs.yesternoon;
  */
 public class Counter 
 {
-  private int     mID;
   private String  mName;
   private int     mCount;
   
-  public Counter(int id, String name)
+  public Counter(String name, int count)
   {
-    mID = id;
-    mName = name;
-    mCount = 0;
-  }
-  
-  public Counter(int id, String name, int count)
-  {
-    mID = id;
     mName = name;
     mCount = count;
-  }
-  
-  public int getID()
-  {
-    return mID;
   }
   
   public int getCount()

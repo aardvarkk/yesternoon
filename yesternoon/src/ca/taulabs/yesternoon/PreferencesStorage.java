@@ -1,7 +1,5 @@
 package ca.taulabs.yesternoon;
 
-import java.util.Vector;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -21,10 +19,13 @@ public class PreferencesStorage
   private static final String PREFS_NAME = "YesternoonPrefs";
   private static final String COUNTER_PREFIX = "Counter_";
   private static final String VALUE_PREFIX = "Value_";
+  private static final String CURRENT_COUNTER = "Current";
   
   private Context mContext;
   private static PreferencesStorage mInstance; // singleton instance
-  private Vector<Counter> mCounters;
+  
+  // Our state. We store it in a class so it's passed by ref and we can edit it anywhere
+  private AppState mState;
   
   /**
    * Private constructor to create the object.
@@ -55,20 +56,9 @@ public class PreferencesStorage
    * Retrieves the list of counters in storage.
    * @return Vector<Counter> The counters
    */
-  public Vector<Counter> getCounters()
+  public AppState getState()
   {
-    return mCounters;
-  }
-  
-  /**
-   * Generates a unique ID for a counter based on the size of the counters.
-   * IDs are 0 based.
-   * 
-   * @return int The unique id.
-   */
-  public int generateID()
-  {
-    return mCounters.size();
+    return mState;
   }
 
   /**
@@ -81,11 +71,13 @@ public class PreferencesStorage
 	  edit.clear(); // clear any previous counters
 	  
 	  // save each counter
-	  for (int nI = 0; nI < mCounters.size(); nI++)
+	  for (int nI = 0; nI < mState.mCounters.size(); nI++)
 	  {
-	    edit.putString(COUNTER_PREFIX + nI, mCounters.get(nI).getName());
-	    edit.putInt(VALUE_PREFIX + nI, mCounters.get(nI).getCount());
+	    edit.putString(COUNTER_PREFIX + nI, mState.mCounters.get(nI).getName());
+	    edit.putInt(VALUE_PREFIX + nI, mState.mCounters.get(nI).getCount());
 	  }
+	  
+	  edit.putInt(CURRENT_COUNTER, mState.mCurrentCounterIdx);
 	  
 	  // commit the changes
 	  edit.commit();
@@ -94,34 +86,11 @@ public class PreferencesStorage
 	}
 	
 	/**
-	 * Saves only a single counter to the shared preferences.
-	 * 
-	 * @param counter The counter to save.
-	 */
-	public void saveCounter(Counter counter)
-	{
-	  SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, 0);
-	  Editor edit = settings.edit();
-	  
-    edit.putString(COUNTER_PREFIX + counter.getID(), counter.getName());
-    edit.putInt(VALUE_PREFIX + counter.getID(), counter.getCount());
-    
-    // commit the changes
-    edit.commit();
-    
-    Log.d(TAG, this.toString());
-	}
-	
-	///////////////////////////////////////////////////////////////////////////
-	// HELPERS
-  ///////////////////////////////////////////////////////////////////////////
-	
-	/**
 	 * Loads all the counters from the SharedPreferences object
 	 */
   private void loadCounters() 
   {
-    mCounters = new Vector<Counter>();
+    mState = new AppState();
     
     // loop through shared prefs loading each counter
     SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, 0);
@@ -131,11 +100,12 @@ public class PreferencesStorage
     {
       String name = settings.getString(COUNTER_PREFIX + idx, null);
       int count = settings.getInt(VALUE_PREFIX + idx, 0);
-      Counter tempCounter = new Counter(idx, name, count);
-      mCounters.add(tempCounter);
+      mState.mCounters.add(new Counter(name, count));
       idx++;
     }
     
+    mState.mCurrentCounterIdx = settings.getInt(CURRENT_COUNTER, 0);
+        
     Log.d(TAG, this.toString());
   }
   
@@ -144,11 +114,14 @@ public class PreferencesStorage
     String retVal = "";
     SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, 0);
     
-    for (int nI = 0; nI < mCounters.size(); nI++)
+    for (int nI = 0; nI < mState.mCounters.size(); nI++)
     {
       retVal += COUNTER_PREFIX + nI + "=" + settings.getString(COUNTER_PREFIX + nI, null) + ", ";
-      retVal += VALUE_PREFIX + nI + "=" + settings.getInt(VALUE_PREFIX + nI, -1) + "\n";
+      retVal += VALUE_PREFIX + nI + "=" + settings.getInt(VALUE_PREFIX + nI, -1) + ", ";
     }
+    
+    retVal += CURRENT_COUNTER + "=" + settings.getInt(CURRENT_COUNTER, 0);
+    retVal += "\n";
     
     return retVal;
   }

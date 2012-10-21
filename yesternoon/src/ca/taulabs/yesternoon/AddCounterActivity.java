@@ -1,7 +1,5 @@
 package ca.taulabs.yesternoon;
 
-import java.util.Vector;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -67,13 +65,11 @@ public class AddCounterActivity extends Activity
       {
         // They have properly created a counter
         // Let's create a new counter, and add it to our list of counters!
-        PreferencesStorage storage = PreferencesStorage.getPreferencesStorage(AddCounterActivity.this);
+        AppState state = PreferencesStorage.getPreferencesStorage(AddCounterActivity.this).getState();
         NumberPicker picker = (NumberPicker)findViewById(R.id.startingCounter);
-        Counter counter = new Counter(storage.generateID(), counterName, picker.getValue());
-        Vector<Counter> counters = storage.getCounters();
-        counters.add(counter);
-        storage.saveCounters();
         
+        state.mCounters.add(new Counter(counterName, picker.getValue()));
+        state.mCurrentCounterIdx = state.mCounters.size() - 1;
         setResult(RESULT_OK);
         finish();
       }
