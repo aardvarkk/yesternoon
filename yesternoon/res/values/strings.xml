@@ -11,5 +11,6 @@
     <string name="starting_count_hint">Starting Count</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="placeholder">PLACEHOLDER</string>
 
 </resources>

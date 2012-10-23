@@ -5,6 +5,7 @@ import ca.taulabs.yesternoon.animations.SlideAnimation;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
@@ -13,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import android.widget.NumberPicker;
@@ -22,6 +24,8 @@ public class YesternoonActivity extends Activity
   // gesture detector for detecting flings
   private GestureDetector    mGestureDetector;
   private AppState           mState;
+
+  public static final String TAG = "Yesternoon";
 
   @Override
   protected void onPause()
@@ -74,13 +78,9 @@ public class YesternoonActivity extends Activity
     vflipper.removeAllViews();
 
     // go through each counter and generate a view for it.
-    for (int counter = 0; counter < mState.mCounters.size(); counter++)
+    for (int nI = 0; nI < mState.mCounters.size(); nI++)
     {
-      // we start at the correct index by building the views starting from the current index
-      // it seems it always just shows the first one you added...
-      int nI = (mState.mCurrentCounterIdx + counter) % mState.mCounters.size();
-          
-      Counter nextCounter = mState.mCounters.elementAt(nI);
+      Counter this_counter = mState.mCounters.elementAt(nI);
 
       // Inflate the layout
       View inflatedView = getLayoutInflater().inflate(
@@ -89,20 +89,47 @@ public class YesternoonActivity extends Activity
       // set the counter name
       TextView counterNameView = (TextView) inflatedView
           .findViewById(R.id.mainCounterName);
-      counterNameView.setText(nextCounter.getName());
-      
+      counterNameView.setText(this_counter.getName());
+
       // set the counter value
       NumberPicker mainCounterValue = (NumberPicker) inflatedView
           .findViewById(R.id.mainCounter);
       mainCounterValue.setMinValue(0);
       mainCounterValue.setMaxValue(999);
-      mainCounterValue.setValue(nextCounter.getCount());
+      mainCounterValue.setValue(this_counter.getCount());
       mainCounterValue.setWrapSelectorWheel(false);
       mainCounterValue
-          .setOnValueChangedListener(new CounterValueChangedListener());
+          .setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+      // add a listener to update our model
+      mainCounterValue.setOnValueChangedListener(new OnValueChangeListener()
+      {
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal)
+        {
+          setCounterValue(mState.mCurrentCounterIdx, newVal);
+        }
+      });
 
       vflipper.addView(inflatedView);
     }
+
+    // Set the current one
+    vflipper.setDisplayedChild(mState.mCurrentCounterIdx);
+  }
+
+  private void setCounterValue(int idx, int newVal)
+  {
+    Log.d(TAG, "Updating counter " + idx + " to value " + newVal);
+    
+    // Update the visual
+    ViewFlipper vflipper = (ViewFlipper) findViewById(R.id.counterFlipperView);
+    View singleCounterView = (View) vflipper
+        .getChildAt(idx);
+    NumberPicker picker = (NumberPicker) singleCounterView.findViewById(R.id.mainCounter);
+    picker.setValue(newVal);
+    
+    // Get the current counter and set it's value
+    mState.mCounters.get(idx).setCount(picker.getValue());
   }
 
   @Override
@@ -119,21 +146,13 @@ public class YesternoonActivity extends Activity
     // decrement the current active counter
     if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
     {
-      ViewFlipper vflipper = (ViewFlipper) findViewById(R.id.counterFlipperView);
-      View singleCounterView = (View) vflipper.getChildAt(mState.mCurrentCounterIdx);
-      NumberPicker picker = (NumberPicker) singleCounterView
-          .findViewById(R.id.mainCounter);
-      picker.setValue(picker.getValue() - 1);
+      setCounterValue(mState.mCurrentCounterIdx, mState.mCounters.get(mState.mCurrentCounterIdx).getCount()-1);
       return true;
     }
     // increment the current active counter
     else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
     {
-      ViewFlipper vflipper = (ViewFlipper) findViewById(R.id.counterFlipperView);
-      View singleCounterView = (View) vflipper.getChildAt(mState.mCurrentCounterIdx);
-      NumberPicker picker = (NumberPicker) singleCounterView
-          .findViewById(R.id.mainCounter);
-      picker.setValue(picker.getValue() + 1);
+      setCounterValue(mState.mCurrentCounterIdx, mState.mCounters.get(mState.mCurrentCounterIdx).getCount()+1);
       return true;
     }
     return super.onKeyDown(keyCode, event);
@@ -203,17 +222,6 @@ public class YesternoonActivity extends Activity
     this.startActivityForResult(addCounterIntent, 1);
   }
 
-  private class CounterValueChangedListener implements
-      NumberPicker.OnValueChangeListener
-  {
-    public void onValueChange(NumberPicker picker, int oldVal, int newVal)
-    {
-      // Get the current counter and set it's value
-      Counter counter = mState.mCounters.get(mState.mCurrentCounterIdx);
-      counter.setCount(newVal);
-    }
-  }
-
   private class MainGestureDetector implements OnGestureListener
   {
     private static final int SWIPE_MIN_DISTANCE       = 120;
@@ -263,6 +271,7 @@ public class YesternoonActivity extends Activity
       else if (mState.mCurrentCounterIdx >= mState.mCounters.size())
         mState.mCurrentCounterIdx = 0;
 
+      Log.d(TAG, "Current Counter Index: " + mState.mCurrentCounterIdx);
       return bFlingDetected;
     }
 

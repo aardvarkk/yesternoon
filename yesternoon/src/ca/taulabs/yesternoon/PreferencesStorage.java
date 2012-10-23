@@ -14,8 +14,6 @@ import android.util.Log;
  */
 public class PreferencesStorage
 {
-  private static final String TAG = "PreferencesStorage";
-  
   private static final String PREFS_NAME = "YesternoonPrefs";
   private static final String COUNTER_PREFIX = "Counter_";
   private static final String VALUE_PREFIX = "Value_";
@@ -82,7 +80,7 @@ public class PreferencesStorage
 	  // commit the changes
 	  edit.commit();
 	  
-    Log.d(TAG, this.toString());
+    Log.d(YesternoonActivity.TAG, this.toString());
 	}
 	
 	/**
@@ -106,7 +104,7 @@ public class PreferencesStorage
     
     mState.mCurrentCounterIdx = settings.getInt(CURRENT_COUNTER, 0);
         
-    Log.d(TAG, this.toString());
+    Log.d(YesternoonActivity.TAG, this.toString());
   }
   
   public String toString()
