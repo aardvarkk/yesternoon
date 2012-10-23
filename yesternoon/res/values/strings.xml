@@ -5,5 +5,11 @@
     <string name="delete_counter">Delete</string>
     <string name="edit_counter">Rename</string>
     <string name="add_counter_title">New Counter</string>
+    <string name="name_label">Name</string>
+    <string name="name_hint">My Counter</string>
+    <string name="starting_count">Starting Count</string>
+    <string name="starting_count_hint">Starting Count</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 
 public class AddCounterActivity extends Activity
 {
@@ -18,11 +17,6 @@ public class AddCounterActivity extends Activity
   {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.add_counter);
-    NumberPicker picker = (NumberPicker)findViewById(R.id.startingCounter);
-    picker.setMinValue(0);
-    picker.setMaxValue(999);
-    picker.setWrapSelectorWheel(false);
-    picker.setValue(0);
     Button btnAddCounterOK = (Button)findViewById(R.id.btnAddCounterOK);
     Button btnAddCounterCancel = (Button)findViewById(R.id.btnAddCounterCancel);
     btnAddCounterOK.setOnClickListener(new AddCounterOKClicked());
@@ -66,9 +60,12 @@ public class AddCounterActivity extends Activity
         // They have properly created a counter
         // Let's create a new counter, and add it to our list of counters!
         AppState state = PreferencesStorage.getPreferencesStorage(AddCounterActivity.this).getState();
-        NumberPicker picker = (NumberPicker)findViewById(R.id.startingCounter);
+
+        // Convert the text to a number
+        EditText startingCountEdit = (EditText) findViewById(R.id.startingCountEdit);
+        Integer startingCount = Integer.parseInt(startingCountEdit.getText().toString());
         
-        state.mCounters.add(new Counter(counterName, picker.getValue()));
+        state.mCounters.add(new Counter(counterName, startingCount));
         state.mCurrentCounterIdx = state.mCounters.size() - 1;
         setResult(RESULT_OK);
         finish();

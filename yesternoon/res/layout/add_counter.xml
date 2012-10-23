@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LinearLayout1"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <TextView
         android:id="@+id/topLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:text="@string/add_counter_title"
         android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -17,77 +19,71 @@
         android:id="@+id/divider1"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
+        android:layout_below="@+id/topLabel"
         android:layout_margin="5dip"
         android:background="@android:color/darker_gray" />
-
-    <RelativeLayout
+
+    <TextView
+        android:id="@+id/nameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider1"
+        android:layout_centerHorizontal="true"
+        android:text="@string/name_label"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/nameEdit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameLabel"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="@string/name_hint"
+        android:singleLine="true" >
 
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent" >
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/startingCountLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameEdit"
+        android:layout_centerHorizontal="true"
+        android:text="@string/starting_count"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/startingCountEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startingCountLabel"
+        android:ems="10"
+        android:hint="@string/starting_count_hint"
+        android:inputType="number"
+        android:singleLine="true" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/nameLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Name"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <EditText
-                    android:id="@+id/nameEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:ems="10"
-                    android:hint="My Counter"
-                    android:singleLine="true" />
-
-                <TextView
-                    android:id="@+id/startingCounterLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Starting Count"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <NumberPicker
-                    android:id="@+id/startingCounter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal" />
-            </LinearLayout>
-        </ScrollView>
-
-        <LinearLayout
-            android:id="@+id/buttonLayout"
+    <LinearLayout
+        android:id="@+id/Buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <Button
+            android:id="@+id/btnAddCounterOK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal" >
+            android:layout_weight="1"
+            android:text="@string/ok" />
+
+        <Button
+            android:id="@+id/btnAddCounterCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel" />
 
-            <Button
-                android:id="@+id/btnAddCounterOK"
-                android:layout_width="100dip"
-                android:layout_height="wrap_content"
-                android:text="OK" />
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/btnAddCounterCancel"
-                android:layout_width="100dip"
-                android:layout_height="wrap_content"
-                android:text="Cancel" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>
