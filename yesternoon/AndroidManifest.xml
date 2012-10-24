@@ -21,6 +21,15 @@
             </intent-filter>
         </activity>
         <activity android:name="AddCounterActivity"></activity>
+        
+        <receiver android:name="ca.taulabs.yesternoon.YesternoonWidget" >
+		    <intent-filter>
+		        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+		    </intent-filter>
+		    <meta-data android:name="android.appwidget.provider"
+		               android:resource="@xml/widgetprovider" />
+		</receiver>
+        
     </application>
 
 </manifest>
